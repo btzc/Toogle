@@ -1,46 +1,23 @@
-const sendResponse = (res, statusCode, headers, data) => {
-  res.writeHead(statusCode, headers);
-  res.end(data);
-}
+const routes = require('./routes');
+const consts = require('./constants');
+const utils = require('./utils');
 
-const parseData = (req, res) => {
-  let rawData = '';
-
-  req.on('data', (chunk) => { 
-    rawData += chunk; 
-  });
-
-  req.on('end', () => {
-    try {
-      console.log(JSON.parse(rawData));
-      const statusCode = 200;
-      const headers = {
-        'Content-Type': 'text/plain'
-      };
-      const data = 'Success';
-      sendResponse(res, statusCode, headers, data);
-    } catch (e) {
-      console.error(e.message);
-      const statusCode = 400;
-      const headers = {
-        'Content-Type': 'text/plain'
-      };
-      const data = 'Server error';
-      sentResponse(res, statusCode, headres, data);
-    }
-  });
+const checkAction = (action) => {
+  return consts.ACTIONS[action];
 }
 
 module.exports = (req, res) => {
-  if (req.method === 'GET') {
-    const statusCode = 200;
+  const url = new URL(`http://${req.headers.host}${req.url}`);
+  const pathname = url.pathname;
+  const method = req.method;
+  if (checkAction(method)) {
+    routes(req, res, pathname, method);
+  } else {
+    const statusCode = 404;
     const headers = {
       'Content-Type': 'text/plain'
     };
-    const data = 'Hello, World!\n';
-
-    sendResponse(res, statusCode, headers, data); 
-  } else {
-    parseData(req, res);
+    const data = 'Bad Method\n';
+    utils.sendResponse(res, statusCode, headers, data);
   }
 };
