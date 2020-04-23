@@ -12,8 +12,11 @@ module.exports.ROUTES = {
     "/app": app_controller.index
   },
   "POST": {
-    "/test": app_controller.test
+    "/tasks/task": app_controller.task
   },
   "PUT": {},
   "DELETE": {},
 }
+
+module.exports.MONGO_URL = 'mongodb://localhost:27017';
+module.exports.DB_NAME = 'toogle';

@@ -4,29 +4,27 @@ module.exports.sendResponse = (res, statusCode, headers, data) => {
 }
 
 module.exports.parseData = (req, res) => {
-  let rawData = '';
+  return new Promise((resolve, reject) => {
+    let body = '';
 
-  req.on('data', (chunk) => { 
-    rawData += chunk; 
-  });
-
-  req.on('end', () => {
-    try {
-      console.log(JSON.parse(rawData));
-      const statusCode = 200;
-      const headers = {
-        'Content-Type': 'text/plain'
-      };
-      const data = 'Success';
-      module.exports.sendResponse(res, statusCode, headers, data);
-    } catch (e) {
-      console.error(e.message);
-      const statusCode = 400;
-      const headers = {
-        'Content-Type': 'text/plain'
-      };
-      const data = 'Server error';
-      module.exports.sendResponse(res, statusCode, headers, data);
-    }
+    req.on('data', (chunk) => { 
+      body += chunk; 
+    });
+  
+    req.on('end', () => {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        reject(e);
+        // console.error(e.message);
+        // const statusCode = 400;
+        // const headers = {
+        //   'Content-Type': 'text/plain'
+        // };
+        // const data = 'Server error';
+        // module.exports.sendResponse(res, statusCode, headers, data);
+      }
+      resolve(body);
+    });
   });
 }
