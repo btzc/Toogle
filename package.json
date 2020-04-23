@@ -1,0 +1,22 @@
+{
+  "name": "toogle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btzc/toogle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/btzc/toogle/issues"
+  },
+  "homepage": "https://github.com/btzc/toogle#readme",
+  "dependencies": {
+    "mongodb": "^3.5.6"
+  }
+}
