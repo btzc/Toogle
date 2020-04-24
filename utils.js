@@ -15,14 +15,8 @@ module.exports.parseData = (req, res) => {
       try {
         body = JSON.parse(body);
       } catch (e) {
-        reject(e);
-        // console.error(e.message);
-        // const statusCode = 400;
-        // const headers = {
-        //   'Content-Type': 'text/plain'
-        // };
-        // const data = 'Server error';
-        // module.exports.sendResponse(res, statusCode, headers, data);
+        console.log(e);
+        reject(new Error('Incorrect parameters'));
       }
       resolve(body);
     });

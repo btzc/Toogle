@@ -12,10 +12,14 @@ module.exports.ROUTES = {
     "/app": app_controller.index
   },
   "POST": {
-    "/tasks/task": app_controller.task
+    "/tasks/task": app_controller.insertTask
   },
-  "PUT": {},
-  "DELETE": {},
+  "PUT": {
+    "/tasks/task": app_controller.updateTask
+  },
+  "DELETE": {
+    "/tasks/task": app_controller.deleteTask
+  },
 }
 
 module.exports.MONGO_URL = 'mongodb://localhost:27017';
