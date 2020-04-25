@@ -1,6 +1,5 @@
 const utils = require('../utils');
 const database = require('../database');
-const constants = require('../constants');
 
 module.exports.index = async (req, res) => {
   try {

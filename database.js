@@ -1,7 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
-const constants = require('./constants');
 const ObjectId = require('mongodb').ObjectID;
 const Timestamp = require('mongodb').Timestamp;
+
+const constants = require('./constants');
 
 const open = () => {
   const url = 'mongodb://localhost:27017'
