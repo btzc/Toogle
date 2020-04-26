@@ -1,6 +1,6 @@
 const routes = require('./routes');
 const consts = require('./constants');
-const utils = require('./utils');
+const utils = require('./helpers/utils');
 
 const checkAction = (action) => {
   return consts.ACTIONS[action];

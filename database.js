@@ -27,7 +27,28 @@ module.exports.createTimestamp = (timestamp) => {
   return new Timestamp(timestamp);
 }
 
-module.exports.getDocuments = async (collection_name, params = {}) => {
+module.exports.findDocument = async (collection_name, query = {}) => {
+  const client = open();
+  let resp;
+
+  try {
+    await client.connect();
+    console.log("Connected to server");
+
+    const db = client.db(constants.DB_NAME);
+    const collection = db.collection(collection_name);
+
+    resp = await collection.findOne(query);
+  } catch(err) {
+    console.log(err);
+    resp = err;
+  }
+
+  client.close();
+  return resp;
+}
+
+module.exports.findDocuments = async (collection_name, query = {}) => {
   const client = open();
   let resp;
   
@@ -38,10 +59,10 @@ module.exports.getDocuments = async (collection_name, params = {}) => {
     const db = client.db(constants.DB_NAME);
     const collection = db.collection(collection_name);
 
-    resp = await collection.find(params).toArray();
+    resp = await collection.find(query).toArray();
   } catch(err) {
     console.log(err);
-    resp = err.stack;
+    resp = err;
   }
 
   client.close();
@@ -62,14 +83,14 @@ module.exports.insertDocument = async (doc, collection_name) => {
     resp = await collection.insertOne(doc);
   } catch(err) {
     console.log(err);
-    resp = err.stack;
+    resp = err;
   }
 
   client.close();
   return resp;
 }
 
-module.exports.updateDocument = async (doc = {}, query = {}, collection_name, ) => {
+module.exports.updateDocument = async (doc = {}, query = {}, collection_name) => {
   const client = open();
   let resp;
   
@@ -83,7 +104,7 @@ module.exports.updateDocument = async (doc = {}, query = {}, collection_name, ) 
     resp = await collection.updateOne(query, {$set: doc});
   } catch(err) {
     console.log(err);
-    resp = err.stack;
+    resp = err;
   }
 
   client.close();
@@ -104,7 +125,31 @@ module.exports.deleteDocument = async (query = {}, collection_name, ) => {
     resp = await collection.deleteOne(query);
   } catch(err) {
     console.log(err);
-    resp = err.stack;
+    resp = err;
+  }
+
+  client.close();
+  return resp;
+}
+
+module.exports.findAndInsertDocument = async (doc = {}, query = {}, collection_name) => {
+  const client = open();
+  let resp;
+  try {
+    await client.connect();
+    console.log("Connected to server");
+
+    const db = client.db(constants.DB_NAME);
+    const collection = db.collection(collection_name);
+
+    if (await collection.findOne(query)) {
+      throw new Error("Email is already in use");
+    }
+
+    resp = await collection.insertOne(doc);
+  } catch(err) {
+    console.log(err);
+    resp = err;
   }
 
   client.close();

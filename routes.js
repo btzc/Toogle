@@ -1,5 +1,5 @@
 const consts = require('./constants');
-const utils = require('./utils');
+const utils = require('./helpers/utils');
 
 const findRoutes = (pathname, action, isBool) => {
   if (!isBool) {

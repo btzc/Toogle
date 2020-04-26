@@ -1,10 +1,14 @@
-const utils = require('../utils');
+const utils = require('../helpers/utils');
 const database = require('../database');
 
 module.exports.index = async (req, res) => {
   try {
-    const collection_name = 'tasks';  
-    const data = JSON.stringify(await database.getDocuments(collection_name));
+    const collection_name = 'tasks';
+    const resp = await database.findDocuments(collection_name);
+    if (resp instanceof Error) {
+      throw new Error(resp);
+    }
+    const data = JSON.stringify(resp);
     
     const statusCode = 200;
     const headers = {
@@ -34,7 +38,10 @@ module.exports.insertTask = (req, res) => {
     .then(async (doc) => {
       const collection_name = 'tasks';
 
-      await database.insertDocument(doc, collection_name);
+      const resp = await database.insertDocument(doc, collection_name);
+      if (resp instanceof Error) {
+        throw new Error(resp);
+      }
 
       const statusCode = 201;
       const headers = {
@@ -65,7 +72,10 @@ module.exports.updateTask = (req, res, id) => {
 
       const collection_name = 'tasks';
       
-      await database.updateDocument(doc, query, collection_name);
+      const resp = await database.updateDocument(doc, query, collection_name);
+      if (resp instanceof Error) {
+        throw new Error(resp);
+      }
 
       const statusCode = 200;
       const headers = {
@@ -94,7 +104,10 @@ module.exports.deleteTask = async (req, res, id) => {
       "_id": database.createObjectId(id)
     };
 
-    await database.deleteDocument(query, collection_name);
+    const resp = await database.deleteDocument(query, collection_name);
+    if (resp instanceof Error) {
+      throw new Error(resp);
+    }
     
     const statusCode = 200;
     const headers = {
