@@ -1,12 +1,12 @@
 const consts = require('./constants');
 const utils = require('./helpers/utils');
 
-const findRoutes = (pathname, action, isBool) => {
-  if (!isBool) {
+const findRoutes = (pathname, action, hasId, req) => {
+  if (!hasId) {
     return consts.ROUTES[action][pathname];
   } else {
     let split = pathname.split('/');
-    split.pop();
+    req.id = split.pop();
     pathname = split.join('/');
 
     return consts.ROUTES[action][pathname];
@@ -18,14 +18,14 @@ const isPutOrDelete = (action) => {
 }
 
 module.exports = (req, res, pathname, action) => {
-  const bool = isPutOrDelete(action);
-  const route = findRoutes(pathname, action, bool);
+  const hasId = isPutOrDelete(action);
+  const route = findRoutes(pathname, action, hasId, req);
+  const middleware = route.middleware;
 
-  if (route && bool) {
-    const split = pathname.split('/');
-    route(req, res, split[split.length-1]);
-  } else if (route && !bool) {
-    route(req, res);
+  if (route && !middleware) {
+    route(req, res)
+  } else if (route.controller && middleware) {
+    middleware(req, res, route.controller);
   } else {
     const statusCode = 404;
     const headers = {

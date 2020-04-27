@@ -1,5 +1,6 @@
 const app_controller = require('./controllers/appController');
 const user_controller = require('./controllers/userController');
+const auth = require('./middleware/auth');
 
 module.exports.ACTIONS = {
   "GET": "GET",
@@ -10,19 +11,31 @@ module.exports.ACTIONS = {
 
 module.exports.ROUTES = {
   "GET": {
-    "/app": app_controller.index
+    "/app": {
+      "controller": app_controller.index,
+      "middleware": auth
+    }
   },
   "POST": {
-    "/tasks/task": app_controller.insertTask,
+    "/tasks/task": {
+      "controller": app_controller.insertTask,
+      "middleware": auth
+    },
     "/users": user_controller.createUser,
     "/users/login": user_controller.login
   },
   "PUT": {
-    "/tasks/task": app_controller.updateTask
+    "/tasks/task": {
+      "controller": app_controller.updateTask,
+      "middleware": auth
+    }
   },
   "DELETE": {
-    "/tasks/task": app_controller.deleteTask
-  },
+    "/tasks/task": {
+      "controller": app_controller.deleteTask,
+      "middleware": auth
+    }
+  }
 }
 
 module.exports.MONGO_URL = 'mongodb://localhost:27017';

@@ -34,5 +34,5 @@ module.exports.encode = (unencoded = '') => {
 }
 
 module.exports.decode = (encoded = '') => {
-  return module.exports.urlDecode(Buffer.from(encoded, 'base64').toString('utf8'));
+  return Buffer.from(encoded, 'base64').toString('utf8');
 }

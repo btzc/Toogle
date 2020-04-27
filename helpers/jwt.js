@@ -33,7 +33,18 @@ module.exports.verifyToken = (token) => {
   verifyFunction.write(`${jwtHeader}.${jwtPayload}`);
   verifyFunction.end();
 
-  const jwtSignatureBase64 = base64.urlDecode(jwtSignature);
+  try {
+    const jwtSignatureBase64 = base64.urlDecode(jwtSignature);
+    const verifiedToken = verifyFunction.verify(PUB, jwtSignatureBase64, 'base64');
 
-  return verifyFunction.verify(PUB, jwtSignatureBase64, 'base64');
+    if (verifiedToken) {
+      return JSON.parse(base64.decode(jwtPayload));
+    }
+    else {
+      throw new Error('Invalid token');
+    }
+  } catch (err) {
+    return new Error(err.message);
+  }
 }
+

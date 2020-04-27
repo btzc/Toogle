@@ -1,10 +1,14 @@
 const utils = require('../helpers/utils');
 const database = require('../database');
+const Task = require('../models/task');
 
 module.exports.index = async (req, res) => {
   try {
     const collection_name = 'tasks';
-    const resp = await database.findDocuments(collection_name);
+    const query = {
+      "user": database.createObjectId(req.user._id)
+    }
+    const resp = await database.findDocuments(collection_name, query);
     if (resp instanceof Error) {
       throw new Error(resp);
     }
@@ -30,10 +34,11 @@ module.exports.index = async (req, res) => {
 module.exports.insertTask = (req, res) => {
   utils.parseData(req, res)
     .then((doc) => {
-      doc._id = database.generateObjectId();
-      doc.timestamp = database.createTimestamp(doc.timestamp);
+      const { description, timestamp } = doc;
+      const user = new Task.Task(description, timestamp, req.user._id)
+      user.format();
 
-      return doc;
+      return user;
     })
     .then(async (doc) => {
       const collection_name = 'tasks';
@@ -63,11 +68,12 @@ module.exports.insertTask = (req, res) => {
     });
 }
 
-module.exports.updateTask = (req, res, id) => {
+module.exports.updateTask = (req, res) => {
   utils.parseData(req, res)
     .then(async (doc) => {
       const query = {
-        "_id": database.createObjectId(id)
+        "_id": database.createObjectId(req.id),
+        "user": database.createObjectId(req.user._id)
       };
 
       const collection_name = 'tasks';
@@ -97,11 +103,12 @@ module.exports.updateTask = (req, res, id) => {
     });
 }
 
-module.exports.deleteTask = async (req, res, id) => {
+module.exports.deleteTask = async (req, res) => {
   try {
     const collection_name = 'tasks';
     const query = {
-      "_id": database.createObjectId(id)
+      "_id": database.createObjectId(req.id),
+      "user": database.createObjectId(req.user._id)
     };
 
     const resp = await database.deleteDocument(query, collection_name);

@@ -14,8 +14,8 @@ module.exports.parseData = (req, res) => {
     req.on('end', () => {
       try {
         body = JSON.parse(body);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        console.log(err);
         reject(new Error('Incorrect parameters'));
       }
       resolve(body);
